@@ -104,7 +104,7 @@ public class Compiler {
         ProcessBuilder pb = new ProcessBuilder("java", "-jar", "proguard" + File.separator + "proguard.jar",
                 "-injars", injar, "-outjars", outjar,
                 "-libraryjars", "proguard" + File.separator + "cldcapi11.jar", "-libraryjars", "proguard" + File.separator + "midpapi20.jar", "-microedition",
-                "-keep", "public class * extends javax.microedition.midlet.MIDlet");
+                "-keep", "public class * extends javax.microedition.midlet.MIDlet", "-dontoptimize");
         Process p = pb.start();
         StringBuilder console = new StringBuilder();
         InputStream stream = p.getInputStream();
