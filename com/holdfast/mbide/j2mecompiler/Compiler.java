@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -12,6 +15,8 @@ import java.util.zip.ZipOutputStream;
  * @author HoldFast
  */
 public class Compiler {
+
+    long time1, time2;
 
     void Compiler() {
 
@@ -30,7 +35,9 @@ public class Compiler {
                 "-cp", apipath, "-target",
                 "1.1", "-source", "1.3", "-nowarn", "-encoding", "UTF-8", srcpath + "*.java", "-d", outpath);
         Process p = pb.start();
-        
+
+        time1 = System.currentTimeMillis();
+
         StringBuilder console = new StringBuilder();
         InputStream stream = p.getErrorStream();
         try {
@@ -50,11 +57,9 @@ public class Compiler {
         final String result = console.toString().trim();
         System.out.println("javac:");
         System.out.println(result);
-        
-        
-        
+
         p.waitFor();
-        
+
         File folder = new File(outpath);
         listOfFiles = folder.listFiles();
         if (listOfFiles.length == 0) {
@@ -105,6 +110,7 @@ public class Compiler {
                 "-injars", injar, "-outjars", outjar,
                 "-libraryjars", "proguard" + File.separator + "cldcapi11.jar", "-libraryjars", "proguard" + File.separator + "midpapi20.jar", "-microedition",
                 "-keep", "public class * extends javax.microedition.midlet.MIDlet", "-dontoptimize");
+        System.out.println("\nproguard:");
         Process p = pb.start();
         StringBuilder console = new StringBuilder();
         InputStream stream = p.getInputStream();
@@ -121,11 +127,17 @@ public class Compiler {
         }
 
         p.waitFor();
+        time2 = System.currentTimeMillis();
+        long difference = time2 - time1;
+        java.util.Date differneceDate = new Date(difference);
 
         final String result = console.toString().trim();
         System.out.println(result);
-        System.out.println("Сборка завершена");
+        System.out.println("Сборка завершена за " + getTime(differneceDate));
 
     }
 
+    private String getTime(Date date) {
+        return (new SimpleDateFormat("mm:ss")).format(date);
+    }
 }
